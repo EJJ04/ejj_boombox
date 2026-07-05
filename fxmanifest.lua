@@ -24,5 +24,4 @@ dependencies {
     'ox_inventory',
     'xsound',
     'ox_lib',
-    'ox_target',
 }

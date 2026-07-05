@@ -5,9 +5,27 @@ local currentVolume = Config.DefaultVolume
 local currentDistance = Config.DefaultDistance
 local spawnedBoomboxes = {}
 local targetedBoomboxes = {}
+local useOxTarget = Config.UseOxTarget ~= false and GetResourceState('ox_target') == 'started'
 
 local function nui(data)
     SendNUIMessage(data)
+end
+
+local function drawText3d(coords, text)
+    local onScreen, x, y = World3dToScreen2d(coords.x, coords.y, coords.z + 0.35)
+
+    if not onScreen then
+        return
+    end
+
+    SetTextScale(0.30, 0.30)
+    SetTextFont(4)
+    SetTextProportional(true)
+    SetTextColour(245, 245, 245, 230)
+    SetTextCentre(true)
+    SetTextEntry('STRING')
+    AddTextComponentString(text)
+    DrawText(x, y)
 end
 
 local function getPlaybackTime()
@@ -74,6 +92,10 @@ local function registerTarget(entity, netId)
     end
 
     targetedBoomboxes[netId] = true
+
+    if not useOxTarget then
+        return
+    end
 
     exports.ox_target:addEntity(netId, {
         {
@@ -171,7 +193,9 @@ RegisterNetEvent('ejj_boombox:client:removeTarget', function(netId)
         return
     end
 
-    exports.ox_target:removeEntity(netId, targetOptionNames(netId))
+    if useOxTarget then
+        exports.ox_target:removeEntity(netId, targetOptionNames(netId))
+    end
 
     targetedBoomboxes[netId] = nil
 
@@ -215,6 +239,70 @@ CreateThread(function()
     Wait(1000)
     TriggerServerEvent('ejj_boombox:server:requestTargets')
 end)
+
+local function getClosestKnownBoombox()
+    local ped = cache.ped
+
+    if not ped or ped == 0 then
+        return nil, nil
+    end
+
+    local playerCoords = GetEntityCoords(ped)
+    local closestObject = lib.getClosestObject(playerCoords, Config.TargetDistance)
+
+    if closestObject and closestObject ~= 0 and DoesEntityExist(closestObject) and GetEntityModel(closestObject) == joaat(Config.Model) then
+        local netId = NetworkGetNetworkIdFromEntity(closestObject)
+
+        if targetedBoomboxes[netId] then
+            return closestObject, netId
+        end
+    end
+
+    local closestEntity = nil
+    local closestNetId = nil
+    local closestDistance = Config.TargetDistance or 2.0
+
+    for netId in pairs(targetedBoomboxes) do
+        local entity = NetworkGetEntityFromNetworkId(netId)
+
+        if entity and entity ~= 0 and DoesEntityExist(entity) then
+            local coords = GetEntityCoords(entity)
+            local distance = #(playerCoords - coords)
+
+            if distance <= closestDistance then
+                closestEntity = entity
+                closestNetId = netId
+                closestDistance = distance
+            end
+        end
+    end
+
+    return closestEntity, closestNetId
+end
+
+if not useOxTarget then
+    CreateThread(function()
+        while true do
+            local wait = 500
+            local entity, netId = getClosestKnownBoombox()
+
+            if entity and netId then
+                wait = 0
+                local coords = GetEntityCoords(entity)
+
+                drawText3d(coords, '[E] Open  [G] Pick up')
+
+                if IsControlJustPressed(0, Config.OpenControl or 38) then
+                    openBoombox(netId)
+                elseif IsControlJustPressed(0, Config.PickupControl or 47) then
+                    TriggerServerEvent('ejj_boombox:server:pickupBoombox', netId)
+                end
+            end
+
+            Wait(wait)
+        end
+    end)
+end
 
 if Config.EnableCommand then
     RegisterCommand(Config.Command, function()
@@ -453,7 +541,9 @@ AddEventHandler('onResourceStop', function(resourceName)
     end
 
     for netId in pairs(targetedBoomboxes) do
-        exports.ox_target:removeEntity(netId, targetOptionNames(netId))
+        if useOxTarget then
+            exports.ox_target:removeEntity(netId, targetOptionNames(netId))
+        end
     end
 
     for _, entity in pairs(spawnedBoomboxes) do
