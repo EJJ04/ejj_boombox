@@ -112,7 +112,7 @@ If `Config.UseOxTarget = true` but `ox_target` is not started, the client automa
 
 ## Language
 
-This resource uses `ox_lib` locale files from `locales/*.json`. English (`en`) and Danish (`da`) are included.
+This resource uses `ox_lib` locale files from `locales/*.json`. Included languages: English (`en`), Danish (`da`), Norwegian (`no`), Swedish (`sv`), Finnish (`fi`), Hebrew (`he`), Chinese (`zh`), Arabic (`ar`), and Indonesian (`id`).
 
 Set the preferred language in `server.cfg`:
 
@@ -120,7 +120,7 @@ Set the preferred language in `server.cfg`:
 setr ox:locale en
 ```
 
-Use `setr ox:locale da` for Danish.
+Replace `en` with any included language code, for example `setr ox:locale da` for Danish or `setr ox:locale sv` for Swedish.
 
 ## NUI
 
