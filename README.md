@@ -112,7 +112,7 @@ If `Config.UseOxTarget = true` but `ox_target` is not started, the client automa
 
 ## Language
 
-This resource uses `ox_lib` locale files from `locales/*.json`. Included languages: English (`en`), Danish (`da`), Norwegian (`no`), Swedish (`sv`), Finnish (`fi`), Hebrew (`he`), Chinese (`zh`), Arabic (`ar`), Indonesian (`id`), French (`fr`), Portuguese (`pt`), Spanish (`es`), Thai (`th`), Filipino (`tl`), German (`de`), Romanian (`ro`), and Hungarian (`hu`).
+This resource uses `ox_lib` locale files from `locales/*.json`. Included languages: English (`en`), Danish (`da`), Norwegian (`no`), Swedish (`sv`), Finnish (`fi`), Hebrew (`he`), Chinese (`zh`), Arabic (`ar`), Indonesian (`id`), French (`fr`), Portuguese (`pt`), Spanish (`es`), Thai (`th`), Filipino (`tl`), German (`de`), Romanian (`ro`), Hungarian (`hu`), Korean (`ko`), Polish (`pl`), Vietnamese (`vi`), Turkish (`tr`), Lithuanian (`lt`), Japanese (`ja`), Greek (`el`), and Dutch (`nl`).
 
 Set the preferred language in `server.cfg`:
 
