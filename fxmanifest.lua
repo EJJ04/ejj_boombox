@@ -10,6 +10,7 @@ files {
     'web/dist/index.html',
     'web/dist/assets/*.css',
     'web/dist/assets/*.js',
+    'locales/*.json',
 }
 
 shared_scripts {

@@ -7,8 +7,37 @@ local spawnedBoomboxes = {}
 local targetedBoomboxes = {}
 local useOxTarget = Config.UseOxTarget ~= false and GetResourceState('ox_target') == 'started'
 
+lib.locale()
+
 local function nui(data)
     SendNUIMessage(data)
+end
+
+local function nuiLocales()
+    return {
+        title = locale('ui_title'),
+        status_playing = locale('ui_status_playing'),
+        status_paused = locale('ui_status_paused'),
+        status_inactive = locale('ui_status_inactive'),
+        stream_url = locale('ui_stream_url'),
+        playback = locale('ui_playback'),
+        volume = locale('ui_volume'),
+        distance = locale('ui_distance'),
+        actions = locale('ui_actions'),
+        play_url = locale('ui_play_url'),
+        add_to_queue = locale('ui_add_to_queue'),
+        pause_playback = locale('ui_pause_playback'),
+        resume_playback = locale('ui_resume_playback'),
+        stop_playback = locale('ui_stop_playback'),
+        queue = locale('ui_queue'),
+        queue_track_singular = locale('ui_queue_track_singular'),
+        queue_track_plural = locale('ui_queue_track_plural'),
+        queued_track = locale('ui_queued_track'),
+        youtube_video = locale('ui_youtube_video'),
+        play_now = locale('ui_play_now'),
+        remove_from_queue = locale('ui_remove_from_queue'),
+        close = locale('ui_close'),
+    }
 end
 
 local function drawText3d(coords, text)
@@ -55,6 +84,7 @@ local function setOpen(state, netId)
         activeBoomboxNetId = netId
         nui({
             action = 'open',
+            locales = nuiLocales(),
             volume = currentVolume,
             distance = currentDistance,
             soundId = currentSoundId,
@@ -100,7 +130,7 @@ local function registerTarget(entity, netId)
     exports.ox_target:addEntity(netId, {
         {
             name = ('ejj_boombox:open:%s'):format(netId),
-            label = 'Åbn boombox',
+            label = locale('target_open'),
             icon = 'fa-solid fa-radio',
             distance = Config.TargetDistance,
             onSelect = function(data)
@@ -115,7 +145,7 @@ local function registerTarget(entity, netId)
         },
         {
             name = ('ejj_boombox:pickup:%s'):format(netId),
-            label = 'Fjern boombox',
+            label = locale('target_pickup'),
             icon = 'fa-solid fa-trash',
             distance = Config.TargetDistance,
             onSelect = function(data)
@@ -290,7 +320,7 @@ if not useOxTarget then
                 wait = 0
                 local coords = GetEntityCoords(entity)
 
-                drawText3d(coords, '[E] Open  [G] Pick up')
+                drawText3d(coords, locale('fallback_prompt'))
 
                 if IsControlJustPressed(0, Config.OpenControl or 38) then
                     openBoombox(netId)
@@ -493,6 +523,7 @@ RegisterNetEvent('ejj_boombox:client:state', function(state)
 
     nui({
         action = 'state',
+        locales = nuiLocales(),
         netId = activeBoomboxNetId,
         soundId = currentSoundId,
         volume = currentVolume,

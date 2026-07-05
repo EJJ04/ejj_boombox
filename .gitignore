@@ -1,1 +1,5 @@
 .vscode/
+web/*
+!web/index.html
+!web/dist/
+!web/dist/**
