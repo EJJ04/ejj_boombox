@@ -216,9 +216,11 @@ CreateThread(function()
     TriggerServerEvent('ejj_boombox:server:requestTargets')
 end)
 
-RegisterCommand(Config.Command, function()
-    placeBoombox()
-end, false)
+if Config.EnableCommand then
+    RegisterCommand(Config.Command, function()
+        placeBoombox()
+    end, false)
+end
 
 RegisterNUICallback('close', function(_, cb)
     setOpen(false)

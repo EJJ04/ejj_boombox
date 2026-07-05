@@ -1,5 +1,6 @@
 Config = {}
 
+Config.EnableCommand = true
 Config.Command = 'boombox'
 Config.ItemName = 'boombox'
 Config.Model = 'prop_boombox_01'

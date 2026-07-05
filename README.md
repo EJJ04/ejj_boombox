@@ -84,6 +84,7 @@ Inside the menu, players can enter a stream URL, start playback, add tracks to t
 Configuration is handled in `config.lua`:
 
 ```lua
+Config.EnableCommand = true
 Config.Command = 'boombox'
 Config.ItemName = 'boombox'
 Config.Model = 'prop_boombox_01'
@@ -95,6 +96,8 @@ Config.MinDistance = 2.0
 Config.MaxDistance = 40.0
 Config.SoundPrefix = 'ejj_boombox'
 ```
+
+Set `Config.EnableCommand = false` if players should only place boomboxes through the inventory item.
 
 ## NUI
 
